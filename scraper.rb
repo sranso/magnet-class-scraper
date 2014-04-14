@@ -3,19 +3,23 @@ require 'nokogiri'
 require 'debugger'
 
 class Scraper
-  attr_reader :html
+  attr_reader :html, :cmd
 
   def initialize(url)
     download = open(url)
     @html = Nokogiri::HTML(download)
+    @cmd = "curl -X POST https://api.twilio.com/2010-04-01/Accounts/AC3dcdb952070290a6e98490c1e807e6c2/SMS/Messages.json \
+      -u AC3dcdb952070290a6e98490c1e807e6c2:453a2167a8835d1d3818fff3f8dd15fc \
+      -d 'From=+19199481387' \
+      -d 'To=+19196324696' \
+      -d 'Body=A Magnet Class is open!'"
   end
 
   def find_levelfour
     rows = html.search('.class-row.vevent')
     rows.each do |row|
       if title(row) && date(row) && status(row)
-        debugger
-        puts 'hi'
+        puts `#{cmd}`
       end
     end
   end
@@ -37,7 +41,5 @@ class Scraper
 end
 
 sc = Scraper.new('http://www.magnettheater.com/classlist.php')
-html = sc.html
 sc.find_levelfour
-debugger
-puts 'hi'
+
