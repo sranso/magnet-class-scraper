@@ -1,0 +1,2 @@
+MAILTO=sranso@gmail.com
+0 */2 * * * ruby scraper.rb
